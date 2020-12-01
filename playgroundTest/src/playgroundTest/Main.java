@@ -1,7 +1,13 @@
 package playgroundTest;
 
+import javax.swing.SwingUtilities;
+
 public class Main {
 	public static void main(String[] args) {
-		System.out.print("Goodbye");
+	       SwingUtilities.invokeLater(new Runnable() {
+	   		public void run() {
+	   		    new GUI();
+	   		}
+	   	    });
 	}
 }
