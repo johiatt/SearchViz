@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import playgroundTest.GUI.Board;
 
 public class GridController {
 	//set this statically at the beginning, this is BAD
@@ -131,7 +130,8 @@ public class GridController {
 		return arrayList;
 	}
 	
-	public void findShortestPath() throws FileNotFoundException {
+	public ArrayList<GridState> findShortestPath() throws FileNotFoundException {
+		ArrayList<GridState> gridsToReturn = new ArrayList<GridState>();
 		Grid g = new Grid(testArray);
 		g.startingPoint = new Point(1, 1); 
 		g.endingPoint = new Point(7, 7);
@@ -157,15 +157,18 @@ public class GridController {
 		while(!stateStore.isEmpty()) {
 			
 			retrieved = stateStore.retrieve();
+			if(retrieved == null)
+				System.out.println("how");
+			gridsToReturn.add(retrieved);
+			
 			//construct squareArray from charArray 
-			wait(50);
-			GUI.board = new GUI.Board(squareFromChar(retrieved.getBoard().getBoard()));
-			GUI.board.paintComponent(GUI.graphics);
+			//wait(50);
+			//Main.g.board = Main.g.new Board(squareFromChar(retrieved.getBoard().getBoard()));
+			//Call a method to update the GUI
+			//System.out.println(GUI.width + " " + GUI.HEIGHT);
 			
-			
-			//need bestPathLength variable?
 			if(retrieved.isComplete()) {
-				break;
+				return gridsToReturn;
 //				if(bestPaths.isEmpty()) {
 //					bestPaths.add(retrieved);
 //				}
@@ -190,6 +193,9 @@ public class GridController {
 			}
 			
 		}
+		//I could return null here.. otherwise there is no finish. Then I could do a nullcheck. 
+		//
+		return gridsToReturn;
 	}
 	public static void wait(int ms)
 	{
