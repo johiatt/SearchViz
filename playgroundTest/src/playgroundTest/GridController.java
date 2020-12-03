@@ -15,6 +15,8 @@ public class GridController {
 	public char[][] initalCharArray;
 	public Square[][] initalSquares;
 	public Grid initGrid;
+	public int searchType = 2;
+	public double blockerChance = .2;
 	
 	public GridController(int sides) {
 		initalCharArray = generateRandomMap(sides);
@@ -25,7 +27,7 @@ public class GridController {
 		shortestPath = createShortestPath();
 	}
 	public ArrayList<GridState> createShortestPath() {
-		ArrayList<GridState> grids = findShortestPath(initGrid);
+		ArrayList<GridState> grids = findShortestPath(initGrid, searchType);
 		return grids;
 	}
 	
@@ -146,7 +148,7 @@ public class GridController {
 		return arrayList;
 	}
 	
-	public ArrayList<GridState> findShortestPath(Grid inputGrid) {
+	public ArrayList<GridState> findShortestPath(Grid inputGrid, int type) {
 		ArrayList<GridState> gridsToReturn = new ArrayList<GridState>();
 		//Grid g = new Grid(testArray);
 		//		g.startingPoint = new Point(1, 1); 
@@ -157,10 +159,14 @@ public class GridController {
 		GridState retrieved = null;
 		Point lastT = null;
 		//initialize the Storage to use either a stack or queue
-		//if(arg1.equals("-q"))
-		stateStore = new Storage<GridState>(Storage.DataStructure.queue); 
-//		else if(arg1.equals("-s"))
-//			stateStore = new Storage<GridState>(Storage.DataStructure.stack);
+		if(type == 1)
+			stateStore = new Storage<GridState>(Storage.DataStructure.queue); 
+		else if(type == 2)
+			stateStore = new Storage<GridState>(Storage.DataStructure.stack);
+		else {
+			System.out.println("bad input");
+			return null;
+		}
 		
 		
 		ListIterator<GridState> iterator = getPositions(inputGrid).listIterator();
@@ -226,7 +232,7 @@ public class GridController {
 			for(int i = 0; i < sides; i++) {
 				for(int j = 0; j < sides; j++) {
 					char c;
-					if(Math.random() <= .2) {
+					if(Math.random() <= blockerChance) {
 						c = 'X';
 					} else {
 						c = 'O';
@@ -239,7 +245,7 @@ public class GridController {
 			grid = new Grid(randomMap);
 			grid.startingPoint = new Point(1, 1);
 			grid.endingPoint = new Point(sides-1, sides-1);
-			pathStates = findShortestPath(grid);
+			pathStates = findShortestPath(grid, searchType);
 		} while(pathStates == null);
 
 		return randomMap;

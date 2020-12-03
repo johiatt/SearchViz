@@ -23,7 +23,7 @@ public class GUI extends JFrame {
 	//randomize squareArray
 	//private Square[][] squareArray = GridController.createSquareArray(squares, width, squareSide);
 	//private Square[][] squareArray = GridController.createSquareArray(squares, width, squareSide);
-	GridController gridController = new GridController(10);
+	GridController gridController = new GridController(20);
 	//public graphics
 	public static Graphics graphics;
 	
@@ -69,8 +69,10 @@ public class GUI extends JFrame {
 					//repaint works but paint directly doesn't?
 //						board.revalidate();
 //						board.repaint();
+					
 					paintAll(getGraphics());
-					GridController.wait(100);
+					
+					GridController.wait(10);
 					//the CURRENT graphics thing is fucked. 
 					//board.paintComponent(getGraphics());
 					
