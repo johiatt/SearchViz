@@ -11,7 +11,23 @@ import java.util.ListIterator;
 public class GridController {
 	//set this statically at the beginning, this is BAD
 	public static int squareSideLength = 0;
-
+	public ArrayList<GridState> shortestPath;
+	public char[][] initalCharArray;
+	public Square[][] initalSquares;
+	public Grid initGrid;
+	
+	public GridController(int sides) {
+		initalCharArray = generateRandomMap(sides);
+		initalSquares = squareFromChar(initalCharArray);
+		initGrid = new Grid(initalCharArray);
+		initGrid.startingPoint = new Point(1,1);
+		initGrid.endingPoint = new Point(sides - 1, sides - 1);
+		shortestPath = createShortestPath();
+	}
+	public ArrayList<GridState> createShortestPath() {
+		ArrayList<GridState> grids = findShortestPath(initGrid);
+		return grids;
+	}
 	
 	//This will only be used as the initial state. 
 	public static char[][] testArray = {
@@ -49,8 +65,8 @@ public class GridController {
 	
 	//update colors
 	public static Square[][] squareFromChar(char[][] newGrid) {
-		int squareSide = GUI.squareSide;
 		int squares = newGrid.length;
+		int squareSide = (int)(GUI.width/squares);
 		Square[][] s = new Square[squares][squares];
 		Color c;
 		for(int i = 0; i < squares; i++) {
@@ -130,11 +146,11 @@ public class GridController {
 		return arrayList;
 	}
 	
-	public ArrayList<GridState> findShortestPath() throws FileNotFoundException {
+	public ArrayList<GridState> findShortestPath(Grid inputGrid) {
 		ArrayList<GridState> gridsToReturn = new ArrayList<GridState>();
-		Grid g = new Grid(testArray);
-		g.startingPoint = new Point(1, 1); 
-		g.endingPoint = new Point(7, 7);
+		//Grid g = new Grid(testArray);
+		//		g.startingPoint = new Point(1, 1); 
+		//		g.endingPoint = new Point(7, 7);
 		Grid board = null;
 		Storage<GridState> stateStore = null;
 		ArrayList<GridState> bestPaths = new ArrayList<GridState>();
@@ -147,25 +163,17 @@ public class GridController {
 //			stateStore = new Storage<GridState>(Storage.DataStructure.stack);
 		
 		
-		ListIterator<GridState> iterator = getPositions(g).listIterator();
+		ListIterator<GridState> iterator = getPositions(inputGrid).listIterator();
 		while(iterator.hasNext()) {
 			stateStore.store(iterator.next());
 			iterator.remove();
 		}
-		
-		//populate stateStore with all possible TraceStates
 		while(!stateStore.isEmpty()) {
 			
 			retrieved = stateStore.retrieve();
 			if(retrieved == null)
 				System.out.println("how");
 			gridsToReturn.add(retrieved);
-			
-			//construct squareArray from charArray 
-			//wait(50);
-			//Main.g.board = Main.g.new Board(squareFromChar(retrieved.getBoard().getBoard()));
-			//Call a method to update the GUI
-			//System.out.println(GUI.width + " " + GUI.HEIGHT);
 			
 			if(retrieved.isComplete()) {
 				return gridsToReturn;
@@ -181,9 +189,7 @@ public class GridController {
 //					bestPaths.add(retrieved);
 //				}
 			}
-
-			
-					
+	
 			//WHERE was last trace added? OK. It's added as POINT in the path. So path(lenght-1) should give the most recent one.
 			lastT = retrieved.getPath().get(retrieved.getPath().size()-1);
 			iterator = getPositions(retrieved).listIterator();
@@ -207,6 +213,36 @@ public class GridController {
 	    {
 	        Thread.currentThread().interrupt();
 	    }
+	}
+	
+	//do we want squareArray or charArray here?
+	public char[][] generateRandomMap(int sides) {
+		//do while(findShortestPath(thismap) == null)
+		Grid grid;
+		char randomMap[][];
+		ArrayList<GridState> pathStates;
+		do {
+			randomMap = new char[sides][sides];
+			for(int i = 0; i < sides; i++) {
+				for(int j = 0; j < sides; j++) {
+					char c;
+					if(Math.random() <= .2) {
+						c = 'X';
+					} else {
+						c = 'O';
+					}
+					randomMap[i][j] = c;
+				}
+				randomMap[1][1] = '1';
+				randomMap[sides - 1][sides - 1] = '2';
+			}
+			grid = new Grid(randomMap);
+			grid.startingPoint = new Point(1, 1);
+			grid.endingPoint = new Point(sides-1, sides-1);
+			pathStates = findShortestPath(grid);
+		} while(pathStates == null);
+
+		return randomMap;
 	}
 	
 	

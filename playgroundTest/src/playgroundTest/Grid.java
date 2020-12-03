@@ -40,7 +40,7 @@ public class Grid {
 	 * @throws FileNotFoundException if Scanner cannot read the file
 	 * @throws InvalidFileFormatException for any other format or content issue that prevents reading a valid input file
 	 */
-	public Grid(char[][] inputBoard) throws FileNotFoundException {
+	public Grid(char[][] inputBoard) {
 		board = inputBoard;
 //		if(board==null)
 //			throw new FileNotFoundException();

@@ -2,6 +2,7 @@ package playgroundTest;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -13,32 +14,29 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class GUI extends JFrame {
-	
-
-
-	
-//	public void repaint() {
-//		paintAll(getGraphics());
-//	}
-	
 
 	//public static Board board;
 	public static int width = 1000;
 	public static int squares = 10;
 	public static int squareSide = (int) (width/squares);
 	static boolean alternate = true;
-	private Square[][] squareArray = GridController.createSquareArray(squares, width, squareSide);
-	GridController g = new GridController();
+	//randomize squareArray
+	//private Square[][] squareArray = GridController.createSquareArray(squares, width, squareSide);
+	//private Square[][] squareArray = GridController.createSquareArray(squares, width, squareSide);
+	GridController gridController = new GridController(10);
 	//public graphics
 	public static Graphics graphics;
 	
 	
+
 	//squareSide = 5
 	//width = squareSide*squares
 	
-	public GUI() {
+	public GUI() throws FileNotFoundException {
+
 		
 		
+		//squareArray = GridController.squareFromChar(gridController.generateRandomMap(5));
 		this.setTitle("SearchViz");
 		//no idea what's causing this offset
 		this.setSize(width+5, width+30);
@@ -48,7 +46,8 @@ public class GUI extends JFrame {
 		
 		//do we still need width change here or no
 		
-		Board board = new Board(squareArray, width);
+		
+		Board board = new Board(gridController.initalSquares, width);
 		//this.setContentPane(board);
 		//graphics = getGraphics();
 		//board.paintComponent(getGraphics());
@@ -65,30 +64,16 @@ public class GUI extends JFrame {
 //	    		board.revalidate();
 //	    		board.repaint();
 	    		
-	    		try {
-					ArrayList<GridState> grids = g.findShortestPath();
-					//print board at least
-					//Square[][] array = board.boardSquareArray;
-					for(GridState grid : grids) {
-						board.updateBoard(GridController.squareFromChar(grid.getBoard().getBoard()));
-						//repaint works but paint directly doesn't?
+	    		for(GridState grid : gridController.shortestPath) {
+					board.updateBoard(GridController.squareFromChar(grid.getBoard().getBoard()));
+					//repaint works but paint directly doesn't?
 //						board.revalidate();
 //						board.repaint();
-						paintAll(getGraphics());
-						GridController.wait(100);
-						//the CURRENT graphics thing is fucked. 
-						//board.paintComponent(getGraphics());
-						
-					}
-
+					paintAll(getGraphics());
+					GridController.wait(100);
+					//the CURRENT graphics thing is fucked. 
 					//board.paintComponent(getGraphics());
 					
-					//painting and waiting should be done here.
-					//get a list of states back, iterate through them
-					
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 	        }  
 	    });
